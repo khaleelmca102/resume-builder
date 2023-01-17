@@ -13,7 +13,7 @@ const StateContext = createContext({
 
 export const ContextProvider = ({children}) => {
     const [user, setUser] = useState({});
-    const [token, _setToken] = useState(133);
+    const [token, _setToken] = useState(localStorage.getItem('access_token'));
     const [currentNav, setCurrentNav] = useState('template')
  
     const setToken = (token) => {
