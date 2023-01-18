@@ -28,7 +28,7 @@ const DefaultLayout = () => {
                         </nav>
                     </div>
                     <div className="col-md-9"> 
-                        <div className="containe">                
+                        <div className="container">                
                             <Outlet /> 
                         </div> 
                     </div>
