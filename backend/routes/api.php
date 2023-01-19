@@ -21,5 +21,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 Route::post('/signup', [AuthController::class, 'signup']);
+Route::post('/checkemail', [AuthController::class, 'checkEmail']);
+Route::post('/checkotp', [AuthController::class, 'checkOtp']);
+Route::post('/setuser', [AuthController::class, 'signUp']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);

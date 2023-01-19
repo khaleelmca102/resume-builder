@@ -1,39 +1,113 @@
 import React from "react"
 import { useRef } from "react";
 import { useState } from "react"
+import { useNavigate } from "react-router-dom";
 import axiosClient from "../axios-client";
 import { useStateContext } from "../contexts/ContextProvider";
 
 const Signup = () => {
+  const navigate = useNavigate();
   const nameRef = useRef();
   const emailRef = useRef();
+  const otpRef = useRef();
+  const passwordRef = useRef();
+  const confirmPasswordRef = useRef();
   const [signUpFlag, setSignUpFlag] = useState(true);
   const [otpFlag, setOtpFlag] = useState(false);
   const [passwordFlag, setPasswordFlag] = useState(false);
+  const [errors, setErrors] = useState(null);
+  const [msg, setMsg] = useState(null);
+  const [name, setName] = useState('');
+  const [email_id, setEmailId] = useState('');
+  const [otp, setOtp] = useState('');
 
   const {setUser, setToken} = useStateContext();
+
+  const hideMsg = () => {
+    setTimeout(() => {            
+      setErrors(null);
+      setMsg(null);
+    },5000)
+  }
 
   const onSubmit = (e) => {
     e.preventDefault();
 
     const payload = {
       name: nameRef.current.value,
-      email: emailRef.current.value
+      email_id: emailRef.current.value
     }
+    setEmailId(emailRef.current.value);
+    setName(nameRef.current.value);
 
-    axiosClient.post('/signup',payload)
+    axiosClient.post('/checkemail',payload)
       .then(({data}) => {
-        setToken(data.token);
-        setUser(data.user);
+        setErrors(null);
+        setSignUpFlag(false);
+        setOtpFlag(true);
+        setMsg(data.message);
+        hideMsg();
       })
-      .catch(error => {
-        const response = error.response;
+      .catch(err => {
+        const response = err.response;
         if(response && response.status === 422){
-          console.log(response.data.errors);
+          setErrors(response.data.errors);
+          hideMsg();          
         }
       })
   }
 
+  const chekcOtp = (e) => {
+    e.preventDefault();
+    const payload = {
+      email_id: email_id,
+      otp: otpRef.current.value
+    }    
+    setOtp(otpRef.current.value);
+
+    axiosClient.post('/checkotp',payload)
+      .then(({data}) => {
+        setErrors(null);
+        setOtpFlag(false);
+        setPasswordFlag(true);
+        hideMsg();
+      })
+      .catch(err => {
+        const response = err.response;
+        if(response && response.status === 422){
+          setErrors(response.data.errors);
+          hideMsg();          
+        }
+      })
+  }
+
+  const setPassword = (e) => {
+    e.preventDefault();
+    const payload = {
+      email_id: email_id,
+      otp: otp,
+      name: name,
+      password: passwordRef.current.value,
+      password_confirmation: confirmPasswordRef.current.value
+    }
+
+    axiosClient.post('/setuser',payload)
+      .then(({data}) => {
+        setErrors(null);
+        setUser(data.user);
+        setToken(data.token);
+        hideMsg();
+        navigate('/template');
+      })
+      .catch(err => {
+        const response = err.response;
+        if(response && response.status === 422){
+          setErrors(response.data.errors);
+          hideMsg();          
+        }
+      })
+  }
+  
   return (
     <div>
       <main className="bg-light">
@@ -47,7 +121,7 @@ const Signup = () => {
                   <div className="p-4 pb-1 pt-2 mt-2 mb-2" id="signupForm" >
                     {signUpFlag &&
                     <div className="" id="divSignup">
-                      <div className="login-heading mb-3 text-center"><h4> Signup </h4></div>
+                      <div className="login-heading mb-3 text-center"><h4> Signup </h4></div>                      
                       <div className="mb-3">
                         <div className="input-group input-group-lg border-bottom">
                           <span className="input-group-text border-0 text-secondary pe-2"><i className="fal fa-user fal-fa-icon"></i></span>
@@ -73,7 +147,7 @@ const Signup = () => {
                             name="txtEmailId"
                             placeholder="Enter Email" 
                             required 
-                            autoComplete="off"     
+                            //autoComplete="off"     
                             ref={emailRef}      
                           />
                         </div>
@@ -102,29 +176,49 @@ const Signup = () => {
                     {otpFlag &&
                       <div className="" id="divSignupOtp">
                         <div className="login-heading mb-3 text-center"><h4> Enter OTP </h4></div>
-                        <div id="signupOTPAlert" className="alert login_alert"></div>
+                        {msg && 
+                          <div id="signupOTPAlert" className="alert login_alert" style={{display:'block'}}>
+                            {msg}
+                          </div>
+                        }
                         <div className="mb-3">
                           <div className="input-group input-group-lg border-bottom">
                             <span className="input-group-text border-0 text-secondary pe-2"><i className="fal fa-key fal-fa-icon"></i></span>
-                            <input type="email" className="txtclassName form-control ps-1" id="txtSignupOTP" name="txtSignupOTP" placeholder="Enter User Email For Get OTP" required autoComplete="off" />
+                            <input 
+                                type="text" 
+                                className="txtclassName form-control ps-1"
+                                id="txtSignupOTP" 
+                                name="txtSignupOTP"
+                                placeholder="Enter OTP" 
+                                required 
+                                autoComplete="off"
+                                ref={otpRef}   
+                              />
                           </div>
                         </div>
-                        <div id="signupOTPError" className="alert_sign login_alert_sign"></div>
                         <div className="align-items-center mt-0 mb-3 text-center">
                           <div className="d-grid">
-                            <button className="btn btn-primary mb-0 btn-login" id="btnCheckSignupOtp" name="btnCheckSignupOtp"><i className="fal fa-sign-in"></i> Get OTP</button>
+                            <button onClick={chekcOtp} className="btn btn-primary mb-0 btn-login" id="btnCheckSignupOtp" name="btnCheckSignupOtp"><i className="fal fa-sign-in"></i> Get OTP</button>
                           </div>
                         </div>
                       </div>
                     }
                     {passwordFlag &&
-                      <div className="" id="divOTPPassword" style={{display:"none"}}>
+                      <div className="" id="divOTPPassword" style={{display:"block"}}>
                         <div className="login-heading mb-3 text-center"><h4> Enter Password </h4></div>
                         <div className="mb-3">
                           <div className="input-group input-group-lg border-bottom">
                             <span className="txtclassName input-group-text text-secondary pe-2"><i className="fal fa-key fal-fa-icon"></i></span>
                             
-                            <input type="password" className="form-control border-0 rounded-end ps-1" name="txtNewPassword" id="txtNewPassword" placeholder="Enter Password" autoComplete="off"/>
+                            <input 
+                              type="password" 
+                              className="form-control border-0 rounded-end ps-1"
+                              name="txtNewPassword"
+                              id="txtNewPassword" 
+                              placeholder="Enter Password" 
+                              autoComplete="off"
+                              ref={passwordRef}   
+                            />
                           </div>
                         </div>
                         
@@ -132,7 +226,15 @@ const Signup = () => {
                           <div className="input-group input-group-lg border-bottom">
                             <span className="txtclassName input-group-text text-secondary pe-2"><i className="fal fa-key fal-fa-icon"></i></span>
                             
-                            <input type="password" className="form-control border-0 rounded-end ps-1" name="txtConfirmPassword" id="txtConfirmPassword" placeholder="Re Enter Password" autoComplete="off"/>
+                            <input 
+                              type="password"
+                              className="form-control border-0 rounded-end ps-1" 
+                              name="txtConfirmPassword" 
+                              id="txtConfirmPassword" 
+                              placeholder="Re Enter Password" 
+                              autoComplete="off"
+                              ref={confirmPasswordRef}   
+                            />
                           </div>
                         </div>							
                               
@@ -140,17 +242,23 @@ const Signup = () => {
                         
                         <div className="align-items-center mt-0 mb-3 text-center">
                           <div className="d-grid">
-                            <button className="btn btn-primary mb-0 btn-login" id="btnSignupPassword" name="btnSignupPassword"><i className="fal fa-sign-in"></i> Submit</button>
+                            <button onClick={setPassword} className="btn btn-primary mb-0 btn-login" id="btnSignupPassword" name="btnSignupPassword"><i className="fal fa-sign-in"></i> Submit</button>
                           </div>
                         </div>
                       </div>
-                    }
+                    }          
+                    {errors && <div className="login_alert_sign">
+                      {Object.keys(errors).map(key => (
+                        <p key={key}>{errors[key][0]}</p>
+                      ))}
+                    </div>
+                    }         
                     <hr />
                     <div className="text-center fs-8 mb-2">
                       <span>Already have an account ? &nbsp;&nbsp;
                         <a href="https://www.tutorialspoint.com/articles/login.php"className="ps-2"><b><i className="fal fa-sign-in"></i> Login</b></a></span>
                     </div>
-                  </div>
+                  </div>                  
                 </div>					
               </div>
             </div>
