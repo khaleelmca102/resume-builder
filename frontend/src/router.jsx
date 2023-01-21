@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import DefaultLayout from './components/DefaultLayout';
 import LoginLayout from './components/LoginLayout';
 import Login from './views/Login';
+import Logout from './views/Logout';
 import NotFound from './views/NotFound';
 import PersonalData from './views/PersonalData';
 import Signup from './views/Signup';
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
             {
                 path:'/personaldata',
                 element: <PersonalData />
+            },
+            {
+                paht:'/logout',
+                element: <Logout />
             }
         ]
     },

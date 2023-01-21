@@ -1,4 +1,5 @@
 import React from "react"
+import { Link } from "react-router-dom"
 
 const Login = () => {
   return (
@@ -45,11 +46,8 @@ const Login = () => {
                     <div className="mb-3 fs-12">
                       <div className="form-check float-start ps-0">
                         <input type="checkbox" id="remember_me" name="chkLanguage" className="login-wrap-checkbox chk-remember"/>
-                        <label className="form-check-label ps-1" >Remember me</label>
-                      
-                        <a href="https://www.tutorialspoint.com/articles/forgot-password.php" className="" id="spanForgot">
-                          <u><i className="fal fa-user-clock me-1"></i> Forgot password?</u>
-                        </a>
+                        <label className="form-check-label ps-1" >Remember me</label>&nbsp;&nbsp;
+                        <Link to='/forgotpassword' ><u><i className="fal fa-user-clock me-1"></i> Forgot password?</u></Link>
                       </div>
                       <div className="clear"></div>
                     </div>
@@ -63,7 +61,9 @@ const Login = () => {
                     </div>                    
                     <hr />
                     <div className="text-center mb-2">
-                      <span>Don't have an account? &nbsp;&nbsp;<a href="https://www.tutorialspoint.com/articles/singup.php"className="ps-2"><b><i className="fal fa-sign-in"></i> Sign Up</b></a></span>
+                      <span>Don't have an account? &nbsp;&nbsp;
+                        <Link to="/signup"><b><i className="fal fa-sign-in"></i> Sign Up</b></Link>
+                      </span>
                     </div>
                   </div>
                 </div>					

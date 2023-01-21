@@ -5,7 +5,12 @@ import '../assets/css/article.css';
 import { useStateContext } from '../contexts/ContextProvider';
 
 const Header = () => {
-    const {token} = useStateContext();
+    const {token, loader, setToken} = useStateContext();
+    const onLogout = (e) => {
+        e.preventDefault();
+        setToken(null);
+    }
+
   return (
     <div>
         <div className="navbar-top navbar-dark d-xl-block py-2 mx-2 mx-md-4 rounded-bottom-4">
@@ -147,21 +152,25 @@ const Header = () => {
                                 <a className="nav-link" href="https://www.tutorialspoint.com/tutorialslibrary.htm" target="_self"><i className="fal fa-books me-1"></i>Library</a>
                             </li>
                             <li className="nav-item">
-                                    <a className="nav-link" href="https://www.tutorialspoint.com/questions/index.php" target="_self"><i className="fal fa-comments-alt me-1"></i> Q/A</a>
+                                    <a className="nav-link" href="https://www.tutorialspoint.com/questions/index.php" target="_self"><i className="fal fa-money-check-edit me-1"></i> Articles</a>
                             </li>
                         </ul>
                     </div>         
                         {!token            
                             ?<div className="navbar-nav d-lg-inline-block nav-login">
-                                <Link to="/login" className="btn btn-grey-border mb-0"><i className="fal fa-sign-in-alt"></i> Login</Link>
+                                <Link to="/login" className="btn btn-grey-border mb-0"><i className="fal fa-sign-in"></i> Login</Link>
                             </div>     
                             :<div className="navbar-nav d-lg-inline-block nav-login">
-                                <Link to="/logout" className="btn btn-grey-border mb-0"><i className="fal fa-sign-out-alt"></i> Logout</Link>
+                                <Link onClick={onLogout} className="btn btn-grey-border mb-0"><i className="fal fa-sign-out"></i> Logout</Link>
                             </div>             
                         }
                 </div>
             </nav>
         </header>
+        {loader 
+            ?<div className="wrap_loader" style={{display:"block"}}></div>
+            : ''
+        }
     </div>
   )
 }

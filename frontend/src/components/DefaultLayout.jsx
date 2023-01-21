@@ -9,7 +9,7 @@ const DefaultLayout = () => {
     if(!token){
         return <Navigate to="/login" />
     }
-
+   
     return (
         <div id="divDefault">
             <Header />

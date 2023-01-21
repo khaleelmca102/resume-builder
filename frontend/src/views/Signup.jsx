@@ -1,7 +1,7 @@
 import React from "react"
 import { useRef } from "react";
 import { useState } from "react"
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosClient from "../axios-client";
 import { useStateContext } from "../contexts/ContextProvider";
 
@@ -21,18 +21,19 @@ const Signup = () => {
   const [email_id, setEmailId] = useState('');
   const [otp, setOtp] = useState('');
 
-  const {setUser, setToken} = useStateContext();
+  const {setUser, setToken, setLoader} = useStateContext();
 
   const hideMsg = () => {
+    setLoader(false);
     setTimeout(() => {            
       setErrors(null);
       setMsg(null);
-    },5000)
+    },2000)
   }
 
   const onSubmit = (e) => {
     e.preventDefault();
-
+    setLoader(true);
     const payload = {
       name: nameRef.current.value,
       email_id: emailRef.current.value
@@ -59,6 +60,7 @@ const Signup = () => {
 
   const chekcOtp = (e) => {
     e.preventDefault();
+    setLoader(true);
     const payload = {
       email_id: email_id,
       otp: otpRef.current.value
@@ -83,6 +85,7 @@ const Signup = () => {
 
   const setPassword = (e) => {
     e.preventDefault();
+    setLoader(true);
     const payload = {
       email_id: email_id,
       otp: otp,
@@ -256,7 +259,8 @@ const Signup = () => {
                     <hr />
                     <div className="text-center fs-8 mb-2">
                       <span>Already have an account ? &nbsp;&nbsp;
-                        <a href="https://www.tutorialspoint.com/articles/login.php"className="ps-2"><b><i className="fal fa-sign-in"></i> Login</b></a></span>
+                        <Link to='/login' ><b><i className="fal fa-sign-in"></i> Login</b></Link>
+                      </span>
                     </div>
                   </div>                  
                 </div>					

@@ -49,8 +49,10 @@ class AuthController extends Controller
         $data = $request->validated();
         $user = User::where('email_id', '=', $data['email_id'])->first();
         if ($user === null) {
+            $user_title = $this->cleanString($data['name']);
             $user = User::create([
                 'user_name'=> $data['name'],
+                'user_title'=> $user_title,
                 'email_id'=> $data['email_id'],
                 'password'=> md5($data['password']),
                 'created_time' => $now
@@ -60,7 +62,6 @@ class AuthController extends Controller
         } else {
             $token = null;
         }
-        $token = $user->createToken('main')->plainTextToken;
 
         return response(compact('user','token'));
     }
