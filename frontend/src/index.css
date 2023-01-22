@@ -26,7 +26,7 @@
     display: block;
 }
 
-.sidenav a:hover {
+.sidenav a:hover, a.active {
     color: #0dba4b;
 }
 
