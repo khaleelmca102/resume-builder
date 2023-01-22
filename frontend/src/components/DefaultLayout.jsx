@@ -6,10 +6,9 @@ import Footer from "./Footer"
 import Header from "./Header"
 
 const DefaultLayout = () => {
-    const {user,token,currentNav,setCurrentNav} = useStateContext();
-    const [activeMenu,setActiveMenu] = useState(null);
+    const {token,currentNav,setCurrentNav} = useStateContext();
+    const [activeMenu,setActiveMenu] = useState(currentNav);
     const location = useLocation();
-
     const menuItems = [
         {
         'title':'Template',
@@ -30,6 +29,9 @@ const DefaultLayout = () => {
     }
     let currentPage = location.pathname;
     currentPage = currentPage.replace('/','');
+    if(currentPage === ''){
+        currentPage = currentNav;
+    }
     useEffect(() => {
         setCurrentNav(currentPage);
         setActiveMenu(currentPage);
@@ -50,10 +52,10 @@ const DefaultLayout = () => {
                                     >
                                         <Link 
                                             to={`/${menuItem.url}`}
-                                            onClick={() => {
-                                                e.preventDefault(); 
-                                                setActieNav(menuItem.url)
-                                            }}
+                                            // onClick={() => {
+                                            //     e.preventDefault(); 
+                                            //     setActieNav(menuItem.url)
+                                            // }}
                                             className={`nav-link ${activeMenu == menuItem.url && 'active'}`}
                                         >
                                             {menuItem.title}

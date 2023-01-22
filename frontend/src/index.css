@@ -34,6 +34,27 @@
     margin: 0px;
 }
 
+.clsTemplateImg {
+    display: inline-block;
+    width: 40% !important;
+}
+.clsTemplateImg button {
+    border: none;
+    padding: 0px;
+}
+.clsTemplateImg img.active {
+    border: none;
+    box-shadow: 0px 0px 10px #0dba4b;
+}
+.clsTemplateImg img {
+    width: 100%;    
+}
+.clsDivButtons {
+    display:flex;
+    justify-content:space-between; 
+    margin:20px 62px;
+}
+
 @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}
     .sidenav a {font-size: 18px;}
