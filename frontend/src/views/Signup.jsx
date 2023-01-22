@@ -28,7 +28,7 @@ const Signup = () => {
     setTimeout(() => {            
       setErrors(null);
       setMsg(null);
-    },2000)
+    },1000)
   }
 
   const onSubmit = (e) => {
@@ -43,7 +43,6 @@ const Signup = () => {
 
     axiosClient.post('/checkemail',payload)
       .then(({data}) => {
-        setErrors(null);
         setSignUpFlag(false);
         setOtpFlag(true);
         setMsg(data.message);
@@ -97,7 +96,7 @@ const Signup = () => {
     axiosClient.post('/setuser',payload)
       .then(({data}) => {
         setErrors(null);
-        setUser(data.user);
+        setUser(JSON. stringify(data.user));
         setToken(data.token);
         hideMsg();
         navigate('/template');

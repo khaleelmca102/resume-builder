@@ -15,6 +15,11 @@ use App\UserOtp;
 
 class AuthController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['login']]);
+    }
+
     public static function cleanString($string, $replace_value = '-') {
 		$string = str_replace('+', 'plus', $string);
 		$string = str_replace('#', 'hash', $string);
@@ -137,15 +142,17 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request){
         $credentials = $request->validated();
-
-        if(!Auth::attempt($credentials)){
+        $user = User::where('email_id', $request->email_id)
+                ->where('password',md5($request->password))
+                ->select('user_id')
+                ->first();
+        if($user == null){
             return response([
-                'message' => 'Provided Email or Password incorrect'
+                "message" => 'Provided Email or Password incorrect',
+                'errors' => ["message" =>['Provided Email or Password incorrect']]
             ], 422);
         }
-        /** @var User $user */
-        $user = Auth::user();
-
+       
         $token = $user->createToken('main')->plainTextToken;
 
         return response(compact('user','token'));

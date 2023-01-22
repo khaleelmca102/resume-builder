@@ -16,7 +16,7 @@ const StateContext = createContext({
 
 
 export const ContextProvider = ({children}) => {
-    const [user, setUser] = useState({});
+    const [user, _setUser] = useState({});
     const [token, _setToken] = useState(localStorage.getItem('access_token'));
     const [currentNav, setCurrentNav] = useState('template');
     const [loader, setLoader] = useState(false)
@@ -33,6 +33,16 @@ export const ContextProvider = ({children}) => {
             setTimeout(() => {     
                 setLoader(false);
             },500);
+        }
+    }
+
+    const setUser = (user) => {
+        _setUser(user);
+        if(user){
+            localStorage.setItem('user',user);
+        } else {
+            localStorage.removeItem('user');       
+            setUser({});
         }
     }
 

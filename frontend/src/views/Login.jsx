@@ -1,7 +1,51 @@
 import React from "react"
+import { useRef, useState } from "react"
 import { Link } from "react-router-dom"
+import axiosClient from "../axios-client";
+import { useStateContext } from "../contexts/ContextProvider";
 
 const Login = () => {
+  const emailRef = useRef();
+  const passwordRef = useRef();
+  const [errors, setErrors] = useState(null);
+  const [msg, setMsg] = useState(null);
+  const {setUser, setToken, setLoader} = useStateContext();
+
+  const hideMsg = () => {
+    setLoader(false);
+    setTimeout(() => {            
+      setErrors(null);
+      setMsg(null);
+    },1000)
+  }
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    setLoader(true);
+
+    const payload = {
+      email_id: emailRef.current.value,
+      password: passwordRef.current.value
+    }
+
+    axiosClient.post('/login',payload)
+      .then(({data}) => {
+        console.log(data.user);
+        setMsg(data.message);
+        setUser(JSON. stringify(data.user));
+        setToken(data.token);
+        hideMsg();
+        navigate('/template');
+      })
+      .catch(err => {
+        const response = err.response;
+        if(response && response.status === 422){
+          setErrors(response.data.errors);
+          hideMsg();          
+        }
+      })    
+  }
+
   return (
     <div>
       <main className="bg-light">
@@ -20,10 +64,10 @@ const Login = () => {
                           className="txtClass form-control ps-1" 
                           id="txtLoginEmailId" 
                           name="txtLoginEmailId" 
-                          placeholder="Enter User Email" 
+                          placeholder="Enter Email" 
                           required
                           //autoComplete="off"
-                          onChange={e=>setEmail(e.target.value)} 
+                          ref={emailRef}
                         />
                       </div>
                     </div>
@@ -37,10 +81,9 @@ const Login = () => {
                           id="txtLoginPassword" 
                           placeholder="Enter Password" 
                           autoComplete="off"
-                          onChange={e=>setPassword(e.target.value)} 
+                          ref={passwordRef}
                         />
                         <div className="clear"></div>
-                        <div className="error"></div>
                       </div>
                     </div>
                     <div className="mb-3 fs-12">
@@ -56,9 +99,15 @@ const Login = () => {
                     <div className="clear"></div>
                     <div className="align-items-center mt-0 mb-3 text-center">
                       <div className="d-grid">
-                        <button className="btn btn-primary mb-0 btn-login" id="submitLogin" name="submitLogin"><i className="fal fa-sign-in"></i> Login</button>
+                        <button onClick={onSubmit} className="btn btn-primary mb-0 btn-login" id="submitLogin" name="submitLogin"><i className="fal fa-sign-in"></i> Login</button>
                       </div>
-                    </div>                    
+                    </div>       
+                    {errors && <div className="login_alert_sign">
+                      {Object.keys(errors).map(key => (
+                        <p key={key}>{errors[key][0]}</p>
+                      ))}
+                    </div>
+                    }                  
                     <hr />
                     <div className="text-center mb-2">
                       <span>Don't have an account? &nbsp;&nbsp;

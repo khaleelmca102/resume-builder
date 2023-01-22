@@ -24,10 +24,6 @@ const router = createBrowserRouter([
             {
                 path:'/personaldata',
                 element: <PersonalData />
-            },
-            {
-                paht:'/logout',
-                element: <Logout />
             }
         ]
     },
@@ -42,6 +38,10 @@ const router = createBrowserRouter([
             {
                 path:'/signup',
                 element: <Signup />
+            },
+            {
+                paht:'/logout',
+                element: <Logout />
             }
         ]
     },
