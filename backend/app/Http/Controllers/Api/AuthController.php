@@ -144,7 +144,7 @@ class AuthController extends Controller
         $credentials = $request->validated();
         $user = User::where('email_id', $request->email_id)
                 ->where('password',md5($request->password))
-                ->select('user_id')
+                ->select('user_id','user_title')
                 ->first();
         if($user == null){
             return response([

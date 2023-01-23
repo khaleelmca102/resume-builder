@@ -1,16 +1,16 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../assets/css/style-min.css';
 import '../assets/css/custom.css';
 import '../assets/css/article.css';
 import { useStateContext } from '../contexts/ContextProvider';
 
-const Header = () => {
-    const {token, loader, setToken} = useStateContext();
+const Header = (props) => {
+    const {token, loader}  = useStateContext();
     const onLogout = (e) => {
         e.preventDefault();
-        setToken(null);
-    }
-
+        props.onLogout();
+    };
+   
   return (
     <div>
         <div className="navbar-top navbar-dark d-xl-block py-2 mx-2 mx-md-4 rounded-bottom-4">

@@ -27,12 +27,8 @@ export const ContextProvider = ({children}) => {
             localStorage.setItem('access_token', token);
         } else {
             localStorage.removeItem('access_token');
-            setLoader(true);            
-            setUser({});
+            localStorage.removeItem('user');
             setCurrentNav('template');
-            setTimeout(() => {     
-                setLoader(false);
-            },500);
         }
     }
 
@@ -41,8 +37,7 @@ export const ContextProvider = ({children}) => {
         if(user){
             localStorage.setItem('user',user);
         } else {
-            localStorage.removeItem('user');       
-            setUser({});
+            localStorage.removeItem('user');   
         }
     }
 

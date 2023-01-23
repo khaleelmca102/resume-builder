@@ -6,16 +6,17 @@ import { useStateContext } from '../contexts/ContextProvider';
 const Logout = () => {
     const navigate = useNavigate();
     const {setToken, setLoader, setUser} = useStateContext();
-    useEffect(() => {
-        setLoader(true);
-        setToken(null);
-        setUser({});        
-        setLoader(false);
-        navigate("/");
-    },[]);
+    //setToken(null);
+     useEffect(() => {
+    //     //setLoader(true);
+        // setUser({});        
+    //     //setLoader(false);
+          navigate("/login");
+     },[]);
 
     return (
         <div>
+            Logout
             <Outlet />
         </div>
     )

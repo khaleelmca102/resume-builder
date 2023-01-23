@@ -30,7 +30,6 @@ const Login = () => {
 
     axiosClient.post('/login',payload)
       .then(({data}) => {
-        console.log(data.user);
         setMsg(data.message);
         setUser(JSON. stringify(data.user));
         setToken(data.token);

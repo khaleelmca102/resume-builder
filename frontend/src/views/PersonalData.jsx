@@ -8,9 +8,9 @@ const PersonalData = () => {
   const inputRef = useRef([]);
 
   let tname = 'f1';
-  if(state) {
-    tname = state.template;
-  }
+  // if(state) {
+  //   tname = state.template;
+  // }
 
   const inputValues = {
     user_id:'',

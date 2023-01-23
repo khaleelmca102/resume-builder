@@ -4,9 +4,10 @@ import { Link, Navigate, Outlet, useLocation } from "react-router-dom"
 import { useStateContext } from "../contexts/ContextProvider"
 import Footer from "./Footer"
 import Header from "./Header"
+import axiosClient from "../axios-client";
 
 const DefaultLayout = () => {
-    const {token,currentNav,setCurrentNav} = useStateContext();
+    const {token,currentNav,setCurrentNav,setToken,setLoader,user} = useStateContext();
     const [activeMenu,setActiveMenu] = useState(currentNav);
     const location = useLocation();
     const menuItems = [
@@ -19,10 +20,7 @@ const DefaultLayout = () => {
         'url':'personaldata'
         }
     ]
-    if(!token){
-        return <Navigate to="/login" />
-    }
-
+    
     const setActieNav = (nav) => {
         setCurrentNav(nav);
         setActiveMenu(nav);
@@ -36,10 +34,34 @@ const DefaultLayout = () => {
         setCurrentNav(currentPage);
         setActiveMenu(currentPage);
     },[currentPage])
+
+    const onLogout = () => {
+        setCurrentNav('template');
+        setLoader(true);
+        const payload = {
+            email_id: user.email_id,
+        } 
+        axiosClient.post('/logout')
+            .then(({}) => {
+                setLoader(false);
+                setToken(null);
+            })
+            .catch(err => {
+                const response = err.response;
+                if(response && response.status === 422){
+                    console.log(response);
+                }
+            })    
+    }
+
+    if(!token){
+        return <Navigate to="/login" />
+    }
+
    
     return (
         <div id="divDefault">
-            <Header />
+            <Header onLogout={onLogout} />
             <div className="container">
                 <div className="row">
                     <div className="col-md-3 sidenav">
