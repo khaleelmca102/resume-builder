@@ -74,10 +74,6 @@ const DefaultLayout = () => {
                                     >
                                         <Link 
                                             to={`/${menuItem.url}`}
-                                            // onClick={() => {
-                                            //     e.preventDefault(); 
-                                            //     setActieNav(menuItem.url)
-                                            // }}
                                             className={`nav-link ${activeMenu == menuItem.url && 'active'}`}
                                         >
                                             {menuItem.title}

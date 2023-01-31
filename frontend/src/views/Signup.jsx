@@ -200,7 +200,7 @@ const Signup = () => {
                         </div>
                         <div className="align-items-center mt-0 mb-3 text-center">
                           <div className="d-grid">
-                            <button onClick={chekcOtp} className="btn btn-primary mb-0 btn-login" id="btnCheckSignupOtp" name="btnCheckSignupOtp"><i className="fal fa-sign-in"></i> Get OTP</button>
+                            <button onClick={chekcOtp} className="btn btn-primary mb-0 btn-login" id="btnCheckSignupOtp" name="btnCheckSignupOtp"><i className="fal fa-sign-in"></i> Check OTP</button>
                           </div>
                         </div>
                       </div>

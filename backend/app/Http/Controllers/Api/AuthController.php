@@ -17,7 +17,7 @@ class AuthController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+       // $this->middleware('auth:api', ['except' => ['login']]);
     }
 
     public static function cleanString($string, $replace_value = '-') {
@@ -75,7 +75,8 @@ class AuthController extends Controller
         $data = $request->validated();
         $user = User::where('email_id', '=', $data['email_id'])->first();
         if ($user === null) {
-            // $email_id = $data['email_id'];
+            $OTP = $this->generateCode();
+            $email_id = $data['email_id'];
             // $mailSubject = "Signup One Time Password (OTP)";
             // $mailContent = "Please use the following One Time Password (OTP) to signup with Tutorialspoint.";
             // $OTP = $this->generateCode();
@@ -91,7 +92,7 @@ class AuthController extends Controller
             //     $message->subject($mailSubject);
             //     $message->to($email_id);
             // });
-            // UserOtp::updateOrCreate(['email_id' => $email_id], ['secret_code' => $OTP, 'attempts' => 0]);
+            UserOtp::updateOrCreate(['email_id' => $email_id], ['secret_code' => $OTP, 'attempts' => 0]);
             return response()->json(["message" => "OTP has been sent to the given email id"], 200);
         } else {
             return response()->json(["message" => "Email Id Already Exists"], 422);

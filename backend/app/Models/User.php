@@ -11,7 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    protected $table = 'USERS_K';
+    protected $table = 'USERS_K1';
     protected $primaryKey = 'user_id';
     public $timestamps = false;
     use HasFactory, Notifiable, HasApiTokens;

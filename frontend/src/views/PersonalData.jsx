@@ -1,19 +1,23 @@
 import React from 'react'
 import { useRef } from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import axiosClient from '../axios-client';
+import { useStateContext } from '../contexts/ContextProvider';
 
 const PersonalData = () => {
   const { state } = useLocation();
+  const { user, token } = useStateContext();
   const inputRef = useRef([]);
 
   let tname = 'f1';
-  // if(state) {
-  //   tname = state.template;
-  // }
-
+  if(state) {
+    tname = state.template;
+  }
+  console.log(token);
+  console.log(user);
   const inputValues = {
-    user_id:'',
+    user_id:user.user_id,
     fullname:'',
     phonenumber:'',
     emailid:'',
@@ -24,6 +28,61 @@ const PersonalData = () => {
     profiledescription:'',
   }
   const [inputs, setInputs] = useState(inputValues);
+
+  useEffect(() => {
+    inputRef.current['fullname'].focus();
+    fetchData(); 
+  },[]);
+  
+  const fetchData = () => {  
+    if (localStorage.getItem("userData") === null) {
+      console.log(inputs.user_id);
+      axiosClient.get('/personaldata',{params:{user_id: inputs.user_id}}).then((res)=>{     
+        setInputs({
+          user_id:inputs.user_id,
+          fullname:res.data.full_name,
+          phonenumber:res.data.phone_number,
+          emailid:res.data.email_id,
+          profiletitle:res.data.profile_title,
+          state:res.data.state,
+          city:res.data.city,
+          zipcode:res.data.zipcode,
+          profiledescription:res.data.profile_description,
+        });
+        const returnValues = {
+          user_id:user.user_id,
+          fullname:res.data.full_name,
+          phonenumber:res.data.phone_number,
+          emailid:res.data.email_id,
+          profiletitle:res.data.profile_title,
+          state:res.data.state,
+          city:res.data.city,
+          zipcode:res.data.zipcode,
+          profiledescription:res.data.profile_description,
+        }
+        localStorage.setItem('userData',JSON.stringify(returnValues));
+        console.log(JSON.stringify(returnValues));
+      }).catch((error) => {
+        if(error.response.status === 401){        
+          navigate('/login');  
+        }
+      });
+    } else {
+      const sdata = localStorage.getItem('userData');
+      const sessionUserData = JSON.parse(sdata);
+      setInputs({
+        user_id:sessionUserData.user_id,
+        fullname:sessionUserData.fullname,
+        phonenumber:sessionUserData.phonenumber,
+        emailid:sessionUserData.emailid,
+        profiletitle:sessionUserData.profiletitle,
+        state:sessionUserData.state,
+        city:sessionUserData.city,
+        zipcode:sessionUserData.zipcode,
+        profiledescription:sessionUserData.profiledescription,
+      });
+    } 
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
