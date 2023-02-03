@@ -9,73 +9,70 @@ const PersonalData = () => {
   const { state } = useLocation();
   const { user, token } = useStateContext();
   const inputRef = useRef([]);
+  const [userinfo, setUserInfo] = useState(JSON.parse(localStorage.getItem('user')));
 
   let tname = 'f1';
   if(state) {
     tname = state.template;
-  }
-  console.log(token);
-  console.log(user);
+  }  
+  useEffect(() => {
+    inputRef.current['fullname'].focus();
+    fetchData(); 
+  },[]);
+
   const inputValues = {
-    user_id:user.user_id,
-    fullname:'',
-    phonenumber:'',
-    emailid:'',
-    profiletitle:'',
+    user_id: userinfo.user_id,
+    fullname: userinfo.user_name,
+    phonenumber: userinfo.mobile_number,
+    emailid: userinfo.email_id,
+    profiletitle: userinfo.profile_tag_line,
     state:'',
     city:'',
     zipcode:'',
     profiledescription:'',
   }
   const [inputs, setInputs] = useState(inputValues);
-
-  useEffect(() => {
-    inputRef.current['fullname'].focus();
-    fetchData(); 
-  },[]);
   
   const fetchData = () => {  
-    if (localStorage.getItem("userData") === null) {
-      console.log(inputs.user_id);
+    if (localStorage.getItem("personaldata") === null) {      
       axiosClient.get('/personaldata',{params:{user_id: inputs.user_id}}).then((res)=>{     
         setInputs({
-          user_id:inputs.user_id,
-          fullname:res.data.full_name,
-          phonenumber:res.data.phone_number,
-          emailid:res.data.email_id,
-          profiletitle:res.data.profile_title,
+          user_id:userinfo.user_id,
+          fullname:(full_name in res.data)?res.data.full_name:userinfo.user_name,
+          phonenumber:(phone_number in res.data)?res.data.phone_number:userinfo.mobile_number,
+          emailid:(email_id in res.data)?res.data.email_id:userinfo.email_id,
+          profiletitle:(profile_title in res.data)?res.data.profile_title:userinfo.profile_tag_line,
           state:res.data.state,
           city:res.data.city,
           zipcode:res.data.zipcode,
           profiledescription:res.data.profile_description,
         });
         const returnValues = {
-          user_id:user.user_id,
-          fullname:res.data.full_name,
-          phonenumber:res.data.phone_number,
-          emailid:res.data.email_id,
-          profiletitle:res.data.profile_title,
+          user_id:userinfo.user_id,
+          fullname:(full_name in res.data)?res.data.full_name:userinfo.user_name,
+          phonenumber:(phone_number in res.data)?res.data.phone_number:userinfo.mobile_number,
+          emailid:(email_id in res.data)?res.data.email_id:userinfo.email_id,
+          profiletitle:(profile_title in res.data)?res.data.profile_title:userinfo.profile_tag_line,
           state:res.data.state,
           city:res.data.city,
           zipcode:res.data.zipcode,
           profiledescription:res.data.profile_description,
         }
-        localStorage.setItem('userData',JSON.stringify(returnValues));
-        console.log(JSON.stringify(returnValues));
+        localStorage.setItem('personaldata',JSON.stringify(returnValues));
       }).catch((error) => {
         if(error.response.status === 401){        
           navigate('/login');  
         }
       });
     } else {
-      const sdata = localStorage.getItem('userData');
+      const sdata = localStorage.getItem('personaldata');
       const sessionUserData = JSON.parse(sdata);
       setInputs({
-        user_id:sessionUserData.user_id,
-        fullname:sessionUserData.fullname,
-        phonenumber:sessionUserData.phonenumber,
-        emailid:sessionUserData.emailid,
-        profiletitle:sessionUserData.profiletitle,
+        user_id:userinfo.user_id,
+        fullname:(fullname in sessionUserData)?sessionUserData.fullname:userinfo.user_name,
+        phonenumber:(phonenumber in sessionUserData)?sessionUserData.phonenumber:userinfo.mobile_number,
+        emailid:(emailid in sessionUserData)?sessionUserData.emailid:userinfo.email_id,
+        profiletitle:(profiletitle in sessionUserData)?sessionUserData.profiletitle:userinfo.profile_tag_line,
         state:sessionUserData.state,
         city:sessionUserData.city,
         zipcode:sessionUserData.zipcode,
