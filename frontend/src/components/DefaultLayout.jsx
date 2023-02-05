@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useState } from "react"
-import { Link, Navigate, Outlet, useLocation } from "react-router-dom"
+import { Link, Navigate, Outlet, useLocation, useNavigate } from "react-router-dom"
 import { useStateContext } from "../contexts/ContextProvider"
 import Footer from "./Footer"
 import Header from "./Header"
@@ -10,6 +10,8 @@ const DefaultLayout = () => {
     const {token,currentNav,setCurrentNav,setToken,setLoader,user} = useStateContext();
     const [activeMenu,setActiveMenu] = useState(currentNav);
     const location = useLocation();
+    const navigate = useNavigate();
+
     const menuItems = [
         {
         'title':'Template',
@@ -30,9 +32,24 @@ const DefaultLayout = () => {
     if(currentPage === ''){
         currentPage = currentNav;
     }
+    const checkLogin = () => {
+        if (localStorage.getItem("user") === null) {
+            setLoader(false);
+            setToken(null);
+        }
+        if(!token){
+            setLoader(false);
+            setToken(null);
+        }
+    } 
     useEffect(() => {
+        checkLogin();        
         setCurrentNav(currentPage);
         setActiveMenu(currentPage);
+        if(!token){
+            setLoader(false);
+            setToken(null);
+        }
     },[currentPage])
 
     const onLogout = () => {
@@ -54,11 +71,11 @@ const DefaultLayout = () => {
             })    
     }
 
-    if(!token){
-        return <Navigate to="/login" />
-    }
+    
+    // if (localStorage.getItem("user") === null) {
+    //     return <Navigate to="/login" />
+    // }
 
-   
     return (
         <div id="divDefault">
             <Header onLogout={onLogout} />

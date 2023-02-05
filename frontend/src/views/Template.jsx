@@ -1,9 +1,11 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useStateContext } from "../contexts/ContextProvider";
 
 const Template = () => {  
   const [templateName, setTemplateName] = useState('f1');
   const navigate = useNavigate();
+  const { user, token } = useStateContext();
 
   const templateImgs = [
       {
@@ -15,6 +17,15 @@ const Template = () => {
         'url':'Experienced1-1634036987.png'
       }
   ]
+
+  useEffect(() => {
+    if(!token){
+      navigate('/login');
+    }    
+    if(!user){
+      navigate('/login');
+    }
+  },[]);
 
   const saveTemplate = () => {
     navigate('/personaldata', {state: {'template':templateName}});

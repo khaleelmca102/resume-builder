@@ -6,7 +6,7 @@ import Header from './Header'
 const LoginLayout = () => {
     const {token} = useStateContext();
 
-    if(token){
+    if(token && localStorage.getItem("user") !== null){
         return <Navigate to="/" />
     }
 

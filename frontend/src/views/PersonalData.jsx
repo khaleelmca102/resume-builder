@@ -1,11 +1,12 @@
 import React from 'react'
 import { useRef } from 'react';
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axiosClient from '../axios-client';
 import { useStateContext } from '../contexts/ContextProvider';
 
 const PersonalData = () => {
+  const navigate = useNavigate();
   const { state } = useLocation();
   const { user, token } = useStateContext();
   const inputRef = useRef([]);
@@ -16,21 +17,41 @@ const PersonalData = () => {
     tname = state.template;
   }  
   useEffect(() => {
+    if(!token){
+      navigate('/login');
+    }
+    if(!user){
+      navigate('/login');
+    }
     inputRef.current['fullname'].focus();
     fetchData(); 
   },[]);
-
-  const inputValues = {
-    user_id: userinfo.user_id,
-    fullname: userinfo.user_name,
-    phonenumber: userinfo.mobile_number,
-    emailid: userinfo.email_id,
-    profiletitle: userinfo.profile_tag_line,
+  
+  let inputValues = {
+    user_id: '',
+    fullname: '',
+    phonenumber: '',
+    emailid: '',
+    profiletitle: '',
     state:'',
     city:'',
     zipcode:'',
     profiledescription:'',
   }
+
+  if(userinfo !== null){
+    inputValues = {
+      user_id: userinfo.user_id,
+      fullname: userinfo.user_name,
+      phonenumber: userinfo.mobile_number,
+      emailid: userinfo.email_id,
+      profiletitle: userinfo.profile_tag_line,
+      state:'',
+      city:'',
+      zipcode:'',
+      profiledescription:'',
+    }
+  } 
   const [inputs, setInputs] = useState(inputValues);
   
   const fetchData = () => {  
