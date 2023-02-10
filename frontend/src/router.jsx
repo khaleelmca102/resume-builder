@@ -5,6 +5,7 @@ import Login from './views/Login';
 import Logout from './views/Logout';
 import NotFound from './views/NotFound';
 import PersonalData from './views/PersonalData';
+import Resume from './views/Resume';
 import Signup from './views/Signup';
 import Template from './views/Template';
 
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
             {
                 path:'/personaldata',
                 element: <PersonalData />
+            },
+            {
+                path:'/resume',
+                element: <Resume />
             },
             {
                 path:'/logout',

@@ -20,6 +20,10 @@ const DefaultLayout = () => {
         {
         'title':'Personal Data',
         'url':'personaldata'
+        },
+        {
+        'title':'Your Resume',
+        'url':'resume'
         }
     ]
     

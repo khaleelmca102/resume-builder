@@ -8,7 +8,7 @@ import { useStateContext } from '../contexts/ContextProvider';
 const PersonalData = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const { user, token } = useStateContext();
+  const { user, token, setLoader } = useStateContext();
   const inputRef = useRef([]);
   const [userinfo, setUserInfo] = useState(JSON.parse(localStorage.getItem('user')));
 
@@ -91,7 +91,7 @@ const PersonalData = () => {
       setInputs({
         user_id:userinfo.user_id,
         fullname:(fullname in sessionUserData)?sessionUserData.fullname:userinfo.user_name,
-        phonenumber:(phonenumber in sessionUserData)?sessionUserData.phonenumber:userinfo.mobile_number,
+        phonenumber:sessionUserData.phonenumber,
         emailid:(emailid in sessionUserData)?sessionUserData.emailid:userinfo.email_id,
         profiletitle:(profiletitle in sessionUserData)?sessionUserData.profiletitle:userinfo.profile_tag_line,
         state:sessionUserData.state,
@@ -116,6 +116,27 @@ const PersonalData = () => {
 
   const saveBasicInfo = (e) => {
     e.preventDefault();
+    setLoader(true);
+    axiosClient.post('/personaldata',   
+    { 
+      user_id:inputs.user_id,
+      full_name:inputs.fullname,
+      phone_number:inputs.phonenumber,
+      profile_title:inputs.profiletitle,
+      email_id:inputs.emailid,
+      state:inputs.state,
+      city:inputs.city,
+      zipcode:inputs.zipcode,
+      profile_description:inputs.profiledescription,
+    }).then((res)=>{
+      localStorage.setItem('personaldata',JSON.stringify(inputs));
+      setLoader(false);
+      navigate('/resume');  
+    }).catch((error) => {
+      if(error.response.status === 401){        
+        navigate('/login');  
+      }
+    }); 
   }
 
   return (
